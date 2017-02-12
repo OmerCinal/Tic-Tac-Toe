@@ -40,5 +40,4 @@ def play(self, board):
         return random.choice(slots)
 ```
 </content>
-  <tabTrigger>readme</tabTrigger>
 </snippet>
