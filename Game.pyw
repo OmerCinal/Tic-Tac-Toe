@@ -97,9 +97,11 @@ class Game:
     def reloadbots(self, event):
         path = os.path.dirname(os.path.realpath(__file__))
         files = [f.split(".")[0] for f in os.listdir(path) if (os.path.isfile(path +"/"+ f) and (f.split(".")[-1] == "py"))]
-        #files.remove("Game")
+
+        if "Game" in files:
+            files.remove("Game")
         
-        self.modules = dict(map((lambda x: (x.__name__, x)),map(__import__, files)))
+        self.modules = dict(map((lambda x: (x.__name__, x)), map(__import__, files)))
 
         self.combo1["values"] = self.modules.keys()
         self.combo2["values"] = self.modules.keys()
@@ -433,8 +435,10 @@ class Game:
 
 
     def drawChains(self, event):
-        if 0 < len(self.canvas.find_withtag("chain")):
+        if self.canvas.find_withtag("chain"):
             self.canvas.delete("chain")
+            return
+        if not self.canvas.find_withtag("shape") or not hasattr(self, "chains"):
             return
         space = 50
         start = 2*space
