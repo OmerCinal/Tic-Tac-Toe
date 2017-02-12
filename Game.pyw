@@ -12,7 +12,6 @@ class Game:
         self.initgui()
         self.gridgui()
         self.configurewidgets()
-        self.root.mainloop()
 
     def initgui(self):
         self.root.title("Tick tack toe")
@@ -449,11 +448,9 @@ class Game:
         
 
     def endgame(self):
-        rng = range(len(self.board))
-        for x in rng:
-            for y in rng:
-                if self.board[x][y] == 0:
-                    return False
+        for row in self.board:
+            if not all(row):
+                return False
         return True
     
 
@@ -475,12 +472,10 @@ class Game:
             return False
 
 
-    
-        
-
 
 def main():
     game = Game()
+    game.root.mainloop()
 
 if __name__ == "__main__":
     main()
