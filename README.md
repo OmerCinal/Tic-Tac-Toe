@@ -37,8 +37,11 @@ length = max(x2 - x1, y2 - y1) + 1
 score += sum(range(3, length+1))
 ```
 for 3 the score is 3
+
 for 4 the score is 3 + 4 = 7
+
 for 5 the score is 3 + 4 + 5 = 12
+
 for 6 the score is 3 + 4 + 5 + 6 = 18
 
 ## Writing your own agent/bot/AI
