@@ -1,6 +1,6 @@
 from Tkinter import *
 from ttk import Combobox
-import os, time
+import os, time, webbrowser
 
 
 class Game:
@@ -43,10 +43,11 @@ class Game:
         self.label_movements = Label(self.frame_options, text="Steps")
         self.movements = Listbox(self.frame_options, width=25, height=15)
 
-        self.label_version = Label(self.frame_options, text="Version v"+self.version)
-
         self.chainVar = 0
         self.button_chain = Button(self.frame_options, text="Show Chains", width=10)
+
+        self.button_help = Button(self.frame_options, text="?", width=3)
+        self.label_version = Label(self.frame_options, text="Version v"+self.version)
         
 
     def gridgui(self):
@@ -76,7 +77,8 @@ class Game:
 
         self.label_movements.grid(columnspan=2)
         self.movements.grid(columnspan=2)
-        self.label_version.grid(columnspan=2)
+        self.label_version.grid(row=14, column=0, pady=5)
+        self.button_help.grid(row=14, column=1, pady=5)
 
 
     def configurewidgets(self):
@@ -85,6 +87,11 @@ class Game:
         self.button_reload.bind("<ButtonRelease-1>", self.reloadbots)
         self.button_reset.bind("<ButtonRelease-1>", self.reset)
         self.button_chain.bind("<ButtonRelease-1>", self.drawChains)
+        self.button_help.bind("<ButtonRelease-1>", self.helpGit)
+
+
+    def helpGit(self, event):
+        webbrowser.open("https://github.com/OmerCinal/Tic-Tac-Toe")
 
 
     def reloadbots(self, event):
@@ -265,8 +272,10 @@ class Game:
         2-Configure the game and press "Setup"
         3-"Start" for one game
           "Test" for # of games
+
+        Click the question mark for more information
         """
-        self.canvas.create_text(300, 100, text=msg, font=100)
+        self.canvas.create_text(100, 100, text=msg, font=100, anchor=W)
 
         self.updateButtons()
 
@@ -333,7 +342,7 @@ class Game:
             return (x,y1,x,y2) if (y2 - y1) > 1 else 0
 
 
-        def getCross1(x, y, p):
+        def getDiagonal1(x, y, p):
             x1, y1, x2, y2 = x, y, x, y
             while x1 > 0 and y1 > 0:
                 if self.board[x1-1][y1-1] == p:
@@ -351,7 +360,7 @@ class Game:
 
             return (x1,y1,x2,y2) if ((x2-x1 > 1) or (y2-y1 > 1)) else 0
 
-        def getCross2(x, y, p):
+        def getDiagonal2(x, y, p):
             x1, y1, x2, y2 = x, y, x, y
             while x1 < self.size-1 and y1 > 0:
                 if self.board[x1+1][y1-1] == p:
@@ -379,8 +388,8 @@ class Game:
 
                 hor = getHorizontal(x, y, player)
                 ver = getVertical(x, y, player)
-                crs1 = getCross1(x, y, player)
-                crs2 = getCross2(x, y, player)
+                crs1 = getDiagonal1(x, y, player)
+                crs2 = getDiagonal2(x, y, player)
 
                 self.chains[player].extend(filter((lambda x: x and (x not in self.chains[player])), [hor, ver, crs1, crs2]))
         
