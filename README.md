@@ -1,6 +1,6 @@
 <snippet>
-  <content><![CDATA[
-# ${1:Project Name}
+  <content><
+# Tic Tac Toe
 A modified tic tac toe game both for playing and testing agents that can play the game.
 ## Installation
 1. Create a folder and name it whatever you like
@@ -39,6 +39,6 @@ def play(self, board):
                     slots.append((x, y))
         return random.choice(slots)
 '''
-]]></content>
+></content>
   <tabTrigger>readme</tabTrigger>
 </snippet>
