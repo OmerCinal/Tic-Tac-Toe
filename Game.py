@@ -370,7 +370,7 @@ class Game:
             return (x1,y1,x2,y2) if ((x2-x1 > 1) or (y2-y1 > 1)) else 0
 
 
-        cross = {p1:[], p2:[]} #p:[ (x1,y1,x2,y2) ]
+        self.chains = {p1:[], p2:[]} #p:[ (x1,y1,x2,y2) ]
         rng = range(len(self.board))
 
         for x in rng:
@@ -382,22 +382,16 @@ class Game:
                 crs1 = getCross1(x, y, player)
                 crs2 = getCross2(x, y, player)
 
-                cross[player].extend(filter((lambda x: x and (x not in cross[player])), [hor, ver, crs1, crs2]))
+                self.chains[player].extend(filter((lambda x: x and (x not in self.chains[player])), [hor, ver, crs1, crs2]))
         
-        score1 = 0
-        score2 = 0
+        scores = {p1:0, p2:0}
 
-        for chain in cross[p1]:
-            length = max(chain[2] - chain[0], chain[3] - chain[1]) + 1
-            score1 += reduce((lambda x,y: x+y), range(3, length+1))
-            
-        for chain in cross[p2]:
-            length = max(chain[2] - chain[0], chain[3] - chain[1]) + 1
-            score2 += reduce((lambda x,y: x+y), range(3, length+1))
+        for player in self.chains:
+            for chain in self.chains[player]:
+                length = max(chain[2] - chain[0], chain[3] - chain[1]) + 1
+                scores[player] += sum(range(3, length+1))
 
-        self.chains = cross
-
-        return score1, score2
+        return scores[p1], scores[p2]
 
 
     def drawChains(self, event):
