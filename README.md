@@ -1,5 +1,5 @@
 <snippet>
-  <content><
+  <content>
 # Tic Tac Toe
 A modified tic tac toe game both for playing and testing agents that can play the game.
 ## Installation
@@ -17,17 +17,17 @@ The code written must be in python and should follow the rules:
 - Should include a class. Class name should be the same as the file name
 - Init method must have three inputs, first being the empty slot id, second being the player id and third being the opponent id.
 Example code:
-'''python
+```python
 def __init__(self, empty, me, opponent):
         self.empty = empty
         self.me = me
         self.opponent = opponent
-'''
+```
 - There should also be a play() method. This method will be called by the Game.py at each turn.
 This method should have an input as 2D array (nested list), as the current state of the board.
 And it should return x, y coordinates as its move.
 Example code:
-'''python
+```python
 def play(self, board):
         random.seed(self.seed)
         self.seed += 1
@@ -38,7 +38,7 @@ def play(self, board):
                 if board[x][y] == self.empty:
                     slots.append((x, y))
         return random.choice(slots)
-'''
-></content>
+```
+</content>
   <tabTrigger>readme</tabTrigger>
 </snippet>
