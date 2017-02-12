@@ -20,6 +20,23 @@ Combo boxes - Agents for both players
 
 Board Size - This should be an even number
 
+## Game rules
+
+- The are 2 players X and O.
+
+- Players should make chains of 3 and more. Horizontally, vertically and diagonal chains are allowed.
+
+- The longer the chain the higher the points. For every slot, the score increases by the length until that point:
+
+The code that calculates the score:
+
+```python
+# gets chain length from coordiantes 
+length = max(x2 - x1, y2 - y1) + 1
+# increases the total score  
+score += sum(range(3, length+1))
+```
+
 ## Writing your own agent/bot/AI
 The code written must be in python and should follow the rules:
 
