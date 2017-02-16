@@ -5,7 +5,7 @@ import os, time, webbrowser
 
 class Game:
 
-    version = "3.7"
+    version = "3.8"
 
     def __init__(self):
         self.root = Tk()
@@ -116,12 +116,16 @@ class Game:
             return
         error = ""
         try:
-            self.player1 = getattr(self.modules[self.combo1.get()], self.combo1.get())(0,1,2)
+            self.name1 = self.combo1.get()
+            self.shape1 = self.entry_shape1.get()
+            self.player1 = getattr(self.modules[self.name1], self.name1)(0,1,2)
         except:
             error += " 1 "
 
         try:
-            self.player2 = getattr(self.modules[self.combo2.get()], self.combo2.get())(0,2,1)
+            self.name2 = self.combo2.get()
+            self.shape2 = self.entry_shape2.get()
+            self.player2 = getattr(self.modules[self.name2], self.name2)(0,2,1)
         except:
             error += " 2 "
 
@@ -141,19 +145,19 @@ class Game:
         self.updateButtons()
 
 
-    def drawboard(self, n):
+    def drawboard(self, size):
         space = 50
         start = (space*3)/2
         board = self.canvas
         board.delete(ALL)
 
-        for i in range(n):
+        for i in range(size):
             board.create_text(space*(i+2), space, text=str(i), anchor=W, tag="coord", font=50)
             board.create_text(space, space*(i+2), text=str(i), anchor=W, tag="coord", font=50)
             
-        for i in range(n+1):
-            board.create_line(start, start + space*i, start + space*n, start + space*i, tag="line", width=2.0, fill="goldenrod")
-            board.create_line(start + space*i, start, start + space*i, start + space*n, tag="line", width=2.0, fill="goldenrod")
+        for i in range(size+1):
+            board.create_line(start, start + space*i, start + space*size, start + space*i, tag="line", width=2.0, fill="goldenrod")
+            board.create_line(start + space*i, start, start + space*i, start + space*size, tag="line", width=2.0, fill="goldenrod")
 
 
     def start(self, event):
@@ -161,26 +165,26 @@ class Game:
             self.message("Please Set the game first")
             return
         self.board = [ [0]*self.size for _ in range(self.size) ]
-        shape1 = self.entry_shape1.get()
-        shape2 = self.entry_shape2.get()
-        score1, score2, steps = self.playOnce(shape1, shape2, self.player1, self.player2, record=True)
+        
+        self.player1.board = self.board
+        self.player2.board = self.board
+        
+        score1, score2, steps = self.playOnce(self.player1, self.player2, record=True)
+
         self.drawboard(self.size)
-        self.updateboard(shape1, shape2)
+        self.updateboard()
 
         self.movements.delete(0, END)
         for step in steps:
             self.movements.insert(END, step)
 
-        self.canvas.create_text(300, 25, text="".join((shape1,": ",str(score1),";  ",shape2,": ",str(score2))) )
+        self.canvas.create_text(300, 25, text="".join((self.shape1,": ",str(score1),";  ",self.shape2,": ",str(score2))) )
         
 
     def test(self, event):
         if not hasattr(self, "board"):
             self.message("Please Set the game first")
             return
-        
-        shape1 = self.entry_shape1.get()
-        shape2 = self.entry_shape2.get()
         
         try:
             testrange = self.validateInt(self.entry_test.get())
@@ -197,11 +201,13 @@ class Game:
         
         for step in range(testrange):
             self.board = [ [0]*self.size for _ in xrange(self.size) ]
+            self.player1.board = self.board
+            self.player2.board = self.board
             if turn:
-                scores1[step], scores2[step] = self.playOnce(shape1, shape2, self.player1, self.player2)
+                scores1[step], scores2[step] = self.playOnce(self.player1, self.player2)
                 turn = False
             else:
-                scores2[step], scores1[step] = self.playOnce(shape1, shape2, self.player2, self.player1)
+                scores2[step], scores1[step] = self.playOnce(self.player2, self.player1)
                 turn = True
 
             if step % 10 == 0:
@@ -223,18 +229,21 @@ class Game:
                 
         result = ["Results:",
                   "",
-                  "Player:\t"+shape1+",\t"+shape2,
+                  self.name1+" ("+self.shape1+")",
+                  self.name2+" ("+self.shape2+")",
+                  "",
+                  "Player:\t"+self.shape1+",\t"+self.shape2,
                   "Wins:  \t"+str(wins1)+",\t"+str(wins2),
                   "Avg:   \t"+str(avg1)+",\t"+str(avg2),
                   "Ties:  \t"+str(ties),
                   "",
-                  "Winner: "+(shape1 if wins1 > wins2 else shape2)]
+                  "Winner: "+(self.shape1 if wins1 > wins2 else self.shape2)]
         
         self.canvas.delete(ALL)
-        self.canvas.create_text(100, 100, text="\n".join(result), anchor=W, font=50)
+        self.canvas.create_text(100, 100, text="\n".join(result), anchor=NW, font=50)
 
 
-    def playOnce(self, shape1, shape2, player1, player2, record=False, human=False):
+    def playOnce(self, player1, player2, record=False, show=False):
         play1 = player1.play
         play2 = player2.play
 
@@ -242,17 +251,17 @@ class Game:
             step = 1
             steps = []
         while not self.endgame():
-            x1, y1 = play1(self.board)
+            x1, y1 = play1()
             self.board[x1][y1] = 1
 
-            x2, y2 = play2(self.board)
+            x2, y2 = play2()
             self.board[x2][y2] = 2
 
-            if human:
-                self.updateboard(shape1, shape2)
+            if show:
+                self.updateboard()
                 
             if record:
-                steps.append("".join((str(step),"- ",shape1, ": (", str(x1), ", ", str(y1), "); ",shape2, ": (", str(x2), ", ", str(y2), ")")))
+                steps.append("".join((str(step),"- ",self.shape1, ": (", str(x1), ", ", str(y1), "); ",self.shape2, ": (", str(x2), ", ", str(y2), ")")))
                 step += 1
             
         s1,s2 = self.getScores(1, 2)
@@ -262,7 +271,7 @@ class Game:
         
 
 
-    def updateboard(self, shape1, shape2):
+    def updateboard(self):
         write = self.canvas.create_text
         rng = range(self.size)
         space = 50
@@ -271,9 +280,9 @@ class Game:
         for x in rng:
             for y in rng:
                 if self.board[x][y] == 1:
-                    write(space*(y+2), space*(x+2), text=shape1, tags=("shape1","shape"), font=("Times",20,"bold"))
+                    write(space*(y+2), space*(x+2), text=self.shape1, tags=("shape1","shape"), font=("Times",20,"bold"))
                 elif self.board[x][y] == 2:
-                    write(space*(y+2), space*(x+2), text=shape2, tags=("shape2","shape"), font=("Times",20,"bold"))
+                    write(space*(y+2), space*(x+2), text=self.shape2, tags=("shape2","shape"), font=("Times",20,"bold"))
 
 
 

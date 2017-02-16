@@ -7,15 +7,16 @@ class RandomBot:#class name is the same as file name
         self.me = me
         self.opponent = opponent
         self.seed = time.time()
+        self.board = []
 
-    def play(self, board):#2d array
+    def play(self):#2d array
         random.seed(self.seed)
         self.seed += 1
-        rng = range(len(board))
+        rng = range(len(self.board))
         slots = []
         for x in rng:
             for y in rng:
-                if board[x][y] == self.empty:
+                if self.board[x][y] == self.empty:
                     slots.append((x, y))
         return random.choice(slots)
 

@@ -7,10 +7,10 @@ class SmartRandom:#class name is the same as file name
         self.me = me
         self.opponent = opponent
         self.seed = time.time()
+        self.board = []
 
 
-    def play(self, board):
-        self.board = board
+    def play(self):
         random.seed(self.seed)
         self.seed += 1
         
