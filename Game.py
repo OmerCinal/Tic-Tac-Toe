@@ -5,7 +5,7 @@ import os, time, webbrowser
 
 class Game:
 
-    version = "3.8"
+    version = "4.0"
 
     def __init__(self):
         self.root = Tk()
