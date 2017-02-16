@@ -1,7 +1,7 @@
 <snippet>
   <content>
 # Tic Tac Toe
-A modified tic tac toe game both for playing and testing agents that can play the game.
+A modified tic tac toe game for testing agents that can play the game.
 
 ## Installation
 1. Create a folder and name it whatever you like
@@ -22,11 +22,11 @@ Board Size - This should be an even number
 
 ## Game rules
 
-- The are 2 players X and O.
+- The are 2 players; X and O.
 
-- Players should make chains of 3 and more. Horizontally, vertically and diagonal chains are allowed.
+- Players should make chains of 3 and more. Horizontal, vertical and diagonal.
 
-- The longer the chain the higher the points. For every slot, the score increases by the length until that point:
+- Longer chains give more points. For every length of chain, the score is calculated by sum(range(3, length+1)):
 
 The code that calculates the score:
 
@@ -65,15 +65,21 @@ And it should return x, y coordinates as its move.
 
 Example code:
 ```python
-def play(self, board):
+def play(self, board): # Randomized Bot
+        # Make sure the result is random
         random.seed(self.seed)
         self.seed += 1
+        
+        # Create a range
         rng = range(len(board))
+        # A list for empty slots
         slots = []
         for x in rng:
             for y in rng:
                 if board[x][y] == self.empty:
                     slots.append((x, y))
+        
+        # Return a random choice from the list of empty slots
         return random.choice(slots)
 ```
 When you are done, move your code to Game.py folder. 
