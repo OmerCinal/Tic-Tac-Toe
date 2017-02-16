@@ -57,31 +57,34 @@ def __init__(self, empty, me, opponent):
         self.empty = empty
         self.me = me
         self.opponent = opponent
+		# board will be updated by the game
+		self.board = []
 ```
 
 - There should also be a play() method. This method will be called by the Game.py at each turn.
-This method should have an input as 2D array (nested list), as the current state of the board.
-And it should return x, y coordinates as its move.
+It should return x, y coordinates as its next move.
 
 Example code:
 ```python
-def play(self, board): # Randomized Bot
+def play(self): # Randomized Bot
         # Make sure the result is random
         random.seed(self.seed)
         self.seed += 1
         
         # Create a range
-        rng = range(len(board))
+        rng = range(len(self.board))
         # A list for empty slots
         slots = []
         for x in rng:
             for y in rng:
-                if board[x][y] == self.empty:
+                if self.board[x][y] == self.empty:
                     slots.append((x, y))
         
         # Return a random choice from the list of empty slots
         return random.choice(slots)
 ```
-When you are done, move your code to Game.py folder. 
+When you are done, move your code to Game.pyw folder. 
+
+You can use the RandomBot.py as a template.
 </content>
 </snippet>
